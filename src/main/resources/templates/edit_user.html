@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <div th:if="${user.getId() == null}">
+    <title>Добавить</title>
+    </div>
+        <div th:if="${user.getId() != null}">
+    <title>Редактировать</title>
+        </div>
+</head>
+<body>
+
+<div th:if="${user.getId() != null}">
+    <form th:method="POST" th:action="@{/admin/{id}(id=${user.getId()})}" th:object="${user}">
+        <input type="hidden" th:field="*{id}"/>
+        <br/>
+        <label for="name">Name: </label>
+        <input type="text" th:field="*{name}" id="name"/>
+        <br/>
+        <br>
+
+        <label for="lastName">Last name: </label>
+        <input type="text" th:field="*{lastName}" id="lastName"/>
+        <br/>
+        <br>
+
+        <label for="username"> Username:</label>
+        <input type="text" th:field="*{username}" id="username"/>
+        <br>
+        <br>
+
+        <label for="password"> Password:</label>
+        <input type="text" th:field="*{password}" id="password"/>
+        <br/>
+        <br>
+
+        <label>Role:
+            <select size="2" multiple name="roles">
+                <option value="1">ADMIN</option>
+                <option selected="selected" value="2">USER</option>
+            </select>
+        </label>
+        <br>
+        <br>
+        <input type="submit" value="Update"/>
+    </form>
+    <br>
+</div>
+<div th:if="${user.getId() == null}">
+    <form th:method="POST" th:action="@{/admin/}" th:object="${user}">
+        <label for="name"> Name:</label>
+        <input type="text" th:field="*{name}" id="name"/>
+        <br>
+        <br>
+        <label for="lastName"> Lastname:</label>
+        <input type="text" th:field="*{lastName}" id="lastName"/>
+        <br>
+        <br>
+        <label for="username"> Username:</label>
+        <input type="text" th:field="*{username}" id="username"/>
+        <br>
+        <br>
+        <label for="password"> Password:</label>
+        <input type="text" th:field="*{password}" id="password"/>
+        <br>
+        <br>
+        <label>Role:
+            <select size="2" multiple name="roles">
+                <option value="1">USER</option>
+                <option selected="selected" value="2">ADMIN</option>
+            </select>
+        </label>
+        <br>
+        <br>
+        <input type="submit" value="OK"/>
+    </form>
+    <br>
+</div>
+<input type="button" value="Отмена"
+       onclick="window.location.href = '/admin/'"/>
+<input type="button" value="logout"
+       onclick="window.location.href = '/logout'"/>
+
+</body>
+</html>
