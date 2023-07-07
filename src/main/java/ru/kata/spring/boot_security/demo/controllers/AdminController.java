@@ -8,7 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.services.UserServiceImpl;
 
 import java.security.Principal;
@@ -18,21 +20,21 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
-    private RoleServiceImpl roleServiceImpl;
+    private RoleService roleService;
 
     @Autowired
-    public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-        this.roleServiceImpl = roleServiceImpl;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping("/")
     public String printUsers(Model model, Principal principal) {
-        User user = userServiceImpl.findByUserName(principal.getName());
+        User user = userService.findByUserName(principal.getName());
         model.addAttribute("user", user);
-        List<User> listOfUsers = userServiceImpl.getAllUser();
+        List<User> listOfUsers = userService.getAllUser();
         model.addAttribute("listOfUsers", listOfUsers);
         return "admin";
     }
@@ -40,7 +42,7 @@ public class AdminController {
     @GetMapping("/addNewUser")
     public String showCreateUserForm(Model model) {
         User user = new User();
-        List<Role> roles = roleServiceImpl.getAllRoles();
+        List<Role> roles = roleService.getAllRoles();
         model.addAttribute("user", user);
         model.addAttribute("roles", roles);
         return "edit_user";
@@ -48,25 +50,25 @@ public class AdminController {
 
     @PostMapping("/")
     public String addUser(@ModelAttribute("user") User user) {
-        userServiceImpl.add(user);
+        userService.add(user);
         return "redirect:/admin/";
     }
 
     @GetMapping("/{id}/edit")
     public String showEditUserForm(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", userServiceImpl.show(id));
+        model.addAttribute("user", userService.show(id));
         return "/edit_user";
     }
 
     @PostMapping("/{id}")
     public String saveEditUser(@ModelAttribute("user") User user, @PathVariable("id") Long id) {
-        userServiceImpl.update(user);
+        userService.update(user);
         return "redirect:/admin/";
     }
 
     @DeleteMapping("/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
-        userServiceImpl.delete(id);
+        userService.delete(id);
         return "redirect:/admin/";
     }
 
